@@ -1,0 +1,783 @@
+import { useState, useEffect, useCallback } from 'react';
+import { HashRouter, Routes, Route, useNavigate, useParams, Link, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'motion/react';
+import { 
+  Mail, Phone, MapPin, Linkedin, Github, Instagram, 
+  User, FileText, Briefcase, BookOpen, Send,
+  Layout, Code, Smartphone, Camera,
+  Download, ExternalLink, ChevronRight, X, Sparkles
+} from 'lucide-react';
+import { Tab, Service, TimelineItem, Skill, Project, BlogPost } from './types';
+import { CursorGlow, Magnetic, SectionWrapper, Parallax } from './components/Effects';
+
+// --- Constants ---
+
+const PROJECTS: Project[] = [
+  { 
+    id: 'finance',
+    title: 'Finance', 
+    category: 'Web development', 
+    image: 'https://picsum.photos/seed/finance/800/600',
+    description: 'A comprehensive financial dashboard designed for modern asset management. Features real-time data visualization, secure transaction tracking, and multi-currency support.',
+    technologies: ['React', 'TypeScript', 'Tailwind CSS', 'D3.js'],
+    gallery: ['https://picsum.photos/seed/finance1/800/600', 'https://picsum.photos/seed/finance2/800/600']
+  },
+  { 
+    id: 'orizon',
+    title: 'Orizon', 
+    category: 'Web development', 
+    image: 'https://picsum.photos/seed/orizon/800/600',
+    description: 'A premium travel booking platform focusing on luxury experiences. Includes an intuitive search engine, interactive maps, and a seamless checkout process.',
+    technologies: ['Next.js', 'Node.js', 'PostgreSQL', 'Framer Motion'],
+    gallery: ['https://picsum.photos/seed/orizon1/800/600', 'https://picsum.photos/seed/orizon2/800/600']
+  },
+  { 
+    id: 'fundo',
+    title: 'Fundo', 
+    category: 'Web design', 
+    image: 'https://picsum.photos/seed/fundo/800/600',
+    description: 'Creative portfolio design for independent artists and photographers. Emphasizes visual storytelling with a minimal, high-contrast aesthetic.',
+    technologies: ['Figma', 'Adobe XD', 'Webflow'],
+    gallery: ['https://picsum.photos/seed/fundo1/800/600', 'https://picsum.photos/seed/fundo2/800/600']
+  },
+  { 
+    id: 'brawlhalla',
+    title: 'Brawlhalla', 
+    category: 'Applications', 
+    image: 'https://picsum.photos/seed/brawl/800/600',
+    description: 'A companion app for competitive gamers, providing real-time stats, tournament schedules, and community forums.',
+    technologies: ['React Native', 'Firebase', 'Redux'],
+    gallery: ['https://picsum.photos/seed/brawl1/800/600', 'https://picsum.photos/seed/brawl2/800/600']
+  },
+  { 
+    id: 'dsm',
+    title: 'DSM', 
+    category: 'Web design', 
+    image: 'https://picsum.photos/seed/dsm/800/600',
+    description: 'Design System Management tool for large-scale enterprise applications. Streamlines the workflow between designers and developers.',
+    technologies: ['React', 'Storybook', 'Styled Components'],
+    gallery: ['https://picsum.photos/seed/dsm1/800/600', 'https://picsum.photos/seed/dsm2/800/600']
+  },
+  { 
+    id: 'metaspark',
+    title: 'MetaSpark', 
+    category: 'Web design', 
+    image: 'https://picsum.photos/seed/meta/800/600',
+    description: 'A futuristic landing page for a decentralized social network. Features immersive 3D elements and interactive scrolling experiences.',
+    technologies: ['Three.js', 'GSAP', 'WebGL'],
+    gallery: ['https://picsum.photos/seed/meta1/800/600', 'https://picsum.photos/seed/meta2/800/600']
+  },
+];
+
+// --- Components ---
+
+const Typewriter = ({ texts, speed = 50, delayBetween = 2000 }: { texts: string[]; speed?: number; delayBetween?: number }) => {
+  const [textIndex, setTextIndex] = useState(0);
+  const [displayedText, setDisplayedText] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const tick = useCallback(() => {
+    const fullText = texts[textIndex];
+    const updatedText = isDeleting 
+      ? fullText.substring(0, displayedText.length - 1)
+      : fullText.substring(0, displayedText.length + 1);
+
+    setDisplayedText(updatedText);
+
+    if (!isDeleting && updatedText === fullText) {
+      setTimeout(() => setIsDeleting(true), delayBetween);
+    } else if (isDeleting && updatedText === '') {
+      setIsDeleting(false);
+      setTextIndex((prev) => (prev + 1) % texts.length);
+    }
+  }, [displayedText, isDeleting, textIndex, texts, delayBetween]);
+
+  useEffect(() => {
+    const timer = setTimeout(tick, isDeleting ? speed / 2 : speed);
+    return () => clearTimeout(timer);
+  }, [tick, isDeleting, speed]);
+
+  return (
+    <span className="primary-text font-bold">
+      {displayedText}
+      <motion.span
+        animate={{ opacity: [1, 0] }}
+        transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }}
+        className="inline-block w-1 h-5 ml-1 bg-primary-start align-middle"
+      />
+    </span>
+  );
+};
+
+const Sidebar = () => (
+  <aside className="w-full lg:w-72 bg-bg-card/40 backdrop-blur-xl border border-border-dark rounded-3xl p-8 flex flex-col items-center lg:sticky lg:top-8 h-fit shadow-2xl">
+    <Parallax offset={20}>
+      <div className="relative mb-6 group">
+        <div className="w-32 h-32 rounded-3xl overflow-hidden bg-border-dark flex items-center justify-center relative">
+          <img 
+            src="https://picsum.photos/seed/richard/200/200" 
+            alt="Richard Hanrick" 
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+            referrerPolicy="no-referrer"
+          />
+          <div className="absolute inset-0 bg-primary-start/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+        </div>
+        <div className="absolute -bottom-2 -right-2 w-8 h-8 primary-gradient rounded-full flex items-center justify-center border-4 border-bg-card shadow-lg">
+          <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+        </div>
+      </div>
+    </Parallax>
+
+    <h1 className="text-2xl font-bold mb-2 text-center">Richard Hanrick</h1>
+    <span className="px-4 py-1.5 bg-border-dark/50 rounded-lg text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-8 text-center border border-white/5">
+      Mechanical Engineer
+    </span>
+
+    <div className="w-full space-y-6 pt-6 border-t border-border-dark">
+      {[
+        { icon: Mail, label: 'Email', value: 'richard@example.com' },
+        { icon: Phone, label: 'Phone', value: '+1 (213) 352-2795' },
+        { icon: MapPin, label: 'Location', value: 'California, USA' }
+      ].map((item, i) => (
+        <div key={i} className="flex items-center gap-4 group cursor-default">
+          <div className="w-10 h-10 rounded-xl bg-border-dark flex items-center justify-center text-primary-start transition-all group-hover:primary-gradient group-hover:text-bg-dark shadow-inner">
+            <item.icon size={18} />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-[10px] uppercase tracking-wider text-gray-500 font-bold">{item.label}</p>
+            <p className="text-sm truncate text-gray-300 group-hover:text-white transition-colors">{item.value}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <div className="flex gap-4 mt-8">
+      {[Linkedin, Github, Instagram].map((Icon, i) => (
+        <div key={i}>
+          <Magnetic strength={0.5}>
+            <motion.a 
+              href="#" 
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              className="w-10 h-10 rounded-xl bg-border-dark flex items-center justify-center text-gray-500 hover:text-primary-start transition-colors hover:bg-white/5 border border-transparent hover:border-white/10 shadow-lg"
+            >
+              <Icon size={20} />
+            </motion.a>
+          </Magnetic>
+        </div>
+      ))}
+    </div>
+  </aside>
+);
+
+const Nav = ({ activeTab, setActiveTab }: { activeTab: Tab, setActiveTab: (t: Tab) => void }) => {
+  const tabs: Tab[] = ['About', 'Resume', 'Portfolio', 'Blog', 'Contact'];
+  const navigate = useNavigate();
+  
+  const handleTabClick = (tab: Tab) => {
+    setActiveTab(tab);
+    navigate('/');
+  };
+
+  const location = useLocation();
+  const isProjectModal = location.pathname.startsWith('/project/');
+
+  return (
+    <nav className={`bg-bg-card/80 backdrop-blur-xl border border-border-dark rounded-t-3xl lg:rounded-tr-3xl lg:rounded-bl-3xl px-8 py-4 flex justify-between lg:justify-end gap-2 lg:gap-8 overflow-x-auto no-scrollbar transition-opacity duration-300 ${isProjectModal ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+      {tabs.map((tab) => (
+        <button
+          key={tab}
+          onClick={() => handleTabClick(tab)}
+          className={`relative py-2 text-sm font-medium transition-colors whitespace-nowrap ${
+            activeTab === tab ? 'text-primary-start' : 'text-gray-400 hover:text-gray-200'
+          }`}
+        >
+          {tab}
+          {activeTab === tab && (
+            <motion.div
+              layoutId="activeTab"
+              className="absolute -bottom-4 left-0 right-0 h-1 primary-gradient rounded-full"
+            />
+          )}
+        </button>
+      ))}
+    </nav>
+  );
+};
+
+const ProjectModal = ({ projects }: { projects: Project[] }) => {
+  const { projectId } = useParams();
+  const navigate = useNavigate();
+  const project = projects.find(p => p.id === projectId);
+
+  if (!project) return null;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-8 bg-black/90 backdrop-blur-md"
+      onClick={() => navigate('/')}
+    >
+      <button 
+        onClick={() => navigate('/')}
+        className="fixed top-6 right-6 w-12 h-12 rounded-2xl bg-white/10 hover:bg-white/20 backdrop-blur-xl flex items-center justify-center text-white transition-all z-[110] border border-white/10 shadow-2xl group hover:scale-110 active:scale-95"
+      >
+        <X size={24} className="group-hover:rotate-90 transition-transform duration-300" />
+      </button>
+
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0, y: 20 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        exit={{ scale: 0.9, opacity: 0, y: 20 }}
+        className="bg-bg-card border border-border-dark w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-3xl relative"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="p-8 sm:p-12">
+          <div className="aspect-video rounded-[2rem] overflow-hidden mb-10 bg-border-dark shadow-2xl border border-white/5 relative group">
+            <img src={project.image} alt={project.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" referrerPolicy="no-referrer" />
+            <div className="absolute inset-0 bg-linear-to-t from-black/40 to-transparent pointer-events-none" />
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            <div className="lg:col-span-2 space-y-6">
+              <h2 className="text-3xl font-bold">{project.title}</h2>
+              <p className="text-gray-400 leading-relaxed">{project.description}</p>
+              
+              <div className="space-y-6">
+                <h3 className="text-xl font-bold flex items-center gap-3">
+                  <Sparkles size={20} className="text-primary-start" />
+                  Project Gallery
+                </h3>
+                <div className="grid grid-cols-2 gap-6">
+                  {project.gallery.map((img, i) => (
+                    <div key={i} className="aspect-video rounded-2xl overflow-hidden bg-border-dark border border-white/5 shadow-xl group cursor-zoom-in">
+                      <img src={img} alt={`${project.title} ${i}`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" referrerPolicy="no-referrer" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-8">
+              <div>
+                <h4 className="text-[10px] uppercase tracking-wider text-gray-500 font-bold mb-4">Category</h4>
+                <p className="text-primary-start font-medium">{project.category}</p>
+              </div>
+
+              <div>
+                <h4 className="text-[10px] uppercase tracking-wider text-gray-500 font-bold mb-4">Technologies</h4>
+                <div className="flex flex-wrap gap-2">
+                  {project.technologies.map((tech, i) => (
+                    <span key={i} className="px-4 py-2 bg-border-dark/50 border border-white/5 rounded-xl text-xs font-medium text-gray-300 hover:text-primary-start hover:border-primary-start/30 transition-all cursor-default">
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <Magnetic strength={0.2}>
+                <button className="w-full py-4 primary-gradient text-bg-dark font-bold rounded-2xl hover:brightness-110 transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-primary-start/20 active:scale-95">
+                  <ExternalLink size={18} />
+                  Live Preview
+                </button>
+              </Magnetic>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+};
+
+// --- Sections ---
+
+const AboutSection = () => {
+  const services: Service[] = [
+    { icon: <Layout size={32} />, title: 'Web Design', description: 'The most modern and high-quality design made at a professional level.' },
+    { icon: <Code size={32} />, title: 'Web Development', description: 'High-quality development of sites at the professional level.' },
+    { icon: <Smartphone size={32} />, title: 'Mobile Apps', description: 'Professional development of applications for iOS and Android.' },
+    { icon: <Camera size={32} />, title: 'Photography', description: 'I make high-quality photos of any category at a professional level.' },
+  ];
+
+  return (
+    <SectionWrapper>
+      <div className="space-y-10">
+        <section>
+          <motion.h2 
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="text-3xl font-bold mb-6 relative inline-block"
+          >
+            About Me
+            <div className="absolute -bottom-2 left-0 w-12 h-1.5 primary-gradient rounded-full" />
+          </motion.h2>
+          <motion.div 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="space-y-4 text-gray-400 leading-relaxed"
+          >
+            <div className="text-2xl font-light text-white mb-6 flex items-center gap-3">
+              <Sparkles className="text-primary-start animate-pulse" size={24} />
+              <span>Hello! I'm a <Typewriter texts={['Mechanical Engineer', 'Video Editor', 'AI Enthusiast', 'UI/UX Designer']} /></span>
+            </div>
+            <p>
+              I'm Creative Director and UI/UX Designer from Sydney, Australia, working in web development and print media. I enjoy turning complex problems into simple, beautiful and intuitive designs.
+            </p>
+            <p>
+              My job is to build your website so that it is functional and user-friendly but at the same time attractive. Moreover, I add personal touch to your product and make sure that is eye-catching and easy to use. My aim is to bring across your message and identity in the most creative way. I created web design for many famous brand companies.
+            </p>
+          </motion.div>
+        </section>
+
+        <section>
+          <motion.h3 
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="text-2xl font-bold mb-8"
+          >
+            What I'm Doing
+          </motion.h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {services.map((service, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                whileHover={{ y: -5 }}
+                className="p-6 bg-linear-to-br from-white/5 to-transparent border border-border-dark rounded-2xl flex gap-5 card-glow-hover group"
+              >
+                <div className="text-primary-start shrink-0 group-hover:scale-110 transition-transform duration-500">{service.icon}</div>
+                <div>
+                  <h4 className="text-lg font-bold mb-2 group-hover:text-primary-start transition-colors">{service.title}</h4>
+                  <p className="text-sm text-gray-400 leading-relaxed">{service.description}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+      </div>
+    </SectionWrapper>
+  );
+};
+
+const ResumeSection = () => {
+  const education: TimelineItem[] = [
+    { title: 'University School of The Arts', period: '2007 — 2008', description: 'Nemo enims ipsam voluptatem, blanditiis praesentium voluptatum deleniti atque corrupti, quos dolores et quas molestias exceptur.' },
+    { title: 'New York Academy of Art', period: '2006 — 2007', description: 'Ratione voluptatem sequi nesciunt, facere quisquam facere monda assimus, omnis voluptas assumenda est omnis.' },
+    { title: 'High School of Art and Design', period: '2002 — 2004', description: 'Duis aute irure dolor in reprehenderit in voluptate, quila voluptas mag odit aut fugit, sed consequuntur magni dolores eos.' },
+  ];
+
+  const experience: TimelineItem[] = [
+    { title: 'Creative Director', period: '2015 — Present', description: 'Nemo enims ipsam voluptatem, blanditiis praesentium voluptatum deleniti atque corrupti, quos dolores et quas molestias exceptur.' },
+    { title: 'Art Director', period: '2013 — 2015', description: 'Nemo enims ipsam voluptatem, blanditiis praesentium voluptatum deleniti atque corrupti, quos dolores et quas molestias exceptur.' },
+    { title: 'Web Designer', period: '2010 — 2013', description: 'Nemo enims ipsam voluptatem, blanditiis praesentium voluptatum deleniti atque corrupti, quos dolores et quas molestias exceptur.' },
+  ];
+
+  const skills: Skill[] = [
+    { name: 'Web Design', percentage: 80 },
+    { name: 'Graphic Design', percentage: 70 },
+    { name: 'Branding', percentage: 90 },
+    { name: 'WordPress', percentage: 50 },
+  ];
+
+  return (
+    <SectionWrapper>
+      <div className="space-y-12">
+        <div className="flex justify-between items-center mb-8">
+          <h2 className="text-3xl font-bold relative inline-block">
+            Resume
+            <div className="absolute -bottom-2 left-0 w-12 h-1.5 primary-gradient rounded-full" />
+          </h2>
+          <Magnetic strength={0.2}>
+            <motion.button 
+              whileTap={{ scale: 0.96 }}
+              className="flex items-center gap-2 px-6 py-2.5 bg-bg-card border border-border-dark rounded-xl text-sm font-medium hover:text-primary-start transition-all group hover:border-primary-start/30"
+            >
+              <Download size={16} className="group-hover:translate-y-0.5 transition-transform" />
+              Download CV
+            </motion.button>
+          </Magnetic>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <motion.section
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+          >
+            <div className="flex items-center gap-4 mb-8">
+              <div className="w-10 h-10 rounded-xl bg-border-dark flex items-center justify-center text-primary-start shadow-inner">
+                <BookOpen size={20} />
+              </div>
+              <h3 className="text-2xl font-bold">Education</h3>
+            </div>
+            <div className="space-y-8 relative before:absolute before:left-[19px] before:top-2 before:bottom-2 before:w-0.5 before:bg-border-dark">
+              {education.map((item, i) => (
+                <motion.div 
+                  key={i} 
+                  initial={{ opacity: 0, x: -10 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className="pl-12 relative group"
+                >
+                  <div className="absolute left-0 top-1.5 w-[40px] h-[40px] flex items-center justify-center">
+                    <div className="w-2.5 h-2.5 rounded-full bg-primary-start ring-8 ring-bg-dark group-hover:scale-150 transition-transform duration-500" />
+                  </div>
+                  <h4 className="text-lg font-bold mb-1 group-hover:text-primary-start transition-colors">{item.title}</h4>
+                  <span className="text-primary-start text-sm font-medium mb-3 block">{item.period}</span>
+                  <p className="text-sm text-gray-400 leading-relaxed">{item.description}</p>
+                </motion.div>
+              ))}
+            </div>
+          </motion.section>
+
+          <motion.section
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+          >
+            <div className="flex items-center gap-4 mb-8">
+              <div className="w-10 h-10 rounded-xl bg-border-dark flex items-center justify-center text-primary-start shadow-inner">
+                <Briefcase size={20} />
+              </div>
+              <h3 className="text-2xl font-bold">Experience</h3>
+            </div>
+            <div className="space-y-8 relative before:absolute before:left-[19px] before:top-2 before:bottom-2 before:w-0.5 before:bg-border-dark">
+              {experience.map((item, i) => (
+                <motion.div 
+                  key={i} 
+                  initial={{ opacity: 0, x: 10 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className="pl-12 relative group"
+                >
+                  <div className="absolute left-0 top-1.5 w-[40px] h-[40px] flex items-center justify-center">
+                    <div className="w-2.5 h-2.5 rounded-full bg-primary-start ring-8 ring-bg-dark group-hover:scale-150 transition-transform duration-500" />
+                  </div>
+                  <h4 className="text-lg font-bold mb-1 group-hover:text-primary-start transition-colors">{item.title}</h4>
+                  <span className="text-primary-start text-sm font-medium mb-3 block">{item.period}</span>
+                  <p className="text-sm text-gray-400 leading-relaxed">{item.description}</p>
+                </motion.div>
+              ))}
+            </div>
+          </motion.section>
+        </div>
+
+        <section className="pt-8">
+          <h3 className="text-2xl font-bold mb-8">My Skills</h3>
+          <div className="p-8 bg-bg-card border border-border-dark rounded-3xl space-y-6 shadow-2xl">
+            {skills.map((skill, i) => (
+              <div key={i}>
+                <div className="flex justify-between mb-2">
+                  <span className="text-sm font-bold">{skill.name}</span>
+                  <span className="text-sm text-gray-400">{skill.percentage}%</span>
+                </div>
+                <div className="h-2 bg-border-dark rounded-full overflow-hidden">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    whileInView={{ width: `${skill.percentage}%` }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 1.5, delay: i * 0.1, ease: [0.23, 1, 0.32, 1] }}
+                    className="h-full primary-gradient shadow-[0_0_10px_rgba(245,197,66,0.5)]"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
+    </SectionWrapper>
+  );
+};
+
+const PortfolioSection = () => {
+  const categories = ['All', 'Web design', 'Applications', 'Web development'];
+  const [activeCategory, setActiveCategory] = useState('All');
+  const navigate = useNavigate();
+
+  const filteredProjects = activeCategory === 'All' 
+    ? PROJECTS 
+    : PROJECTS.filter(p => p.category === activeCategory);
+
+  return (
+    <SectionWrapper>
+      <div className="relative">
+        <div className="absolute -top-24 -right-24 w-64 h-64 bg-primary-start/5 rounded-full blur-[100px] pointer-events-none" />
+        <h2 className="text-3xl font-bold mb-8 relative inline-block">
+          Portfolio
+          <div className="absolute -bottom-2 left-0 w-12 h-1.5 primary-gradient rounded-full" />
+        </h2>
+      </div>
+
+      <div className="flex gap-4 mb-12 overflow-x-auto no-scrollbar pb-2">
+        {categories.map(cat => (
+          <button
+            key={cat}
+            onClick={() => setActiveCategory(cat)}
+            className={`text-xs font-bold uppercase tracking-widest transition-all whitespace-nowrap px-6 py-3 rounded-2xl border ${
+              activeCategory === cat 
+                ? 'text-primary-start bg-primary-start/10 border-primary-start/20 shadow-[0_0_20px_rgba(245,197,66,0.1)]' 
+                : 'text-gray-500 bg-white/5 border-white/5 hover:text-gray-300 hover:bg-white/10'
+            }`}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <AnimatePresence mode="popLayout">
+          {filteredProjects.map((project, i) => (
+            <motion.div
+              layout
+              key={project.id}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ 
+                layout: { type: "spring", stiffness: 300, damping: 30 },
+                opacity: { duration: 0.2 },
+                scale: { duration: 0.2 }
+              }}
+              whileHover={{ 
+                y: -12,
+                transition: { type: "spring", stiffness: 400, damping: 25 }
+              }}
+              className="group cursor-pointer card-glow-hover p-5 bg-bg-card/20 border border-border-dark rounded-[2.5rem]"
+              onClick={() => navigate(`/project/${project.id}`)}
+            >
+              <div className="relative aspect-video rounded-2xl overflow-hidden mb-6 bg-border-dark shadow-2xl">
+                <img 
+                  src={project.image} 
+                  alt={project.title} 
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  referrerPolicy="no-referrer"
+                />
+                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col items-center justify-center gap-4 backdrop-blur-[2px]">
+                  <motion.div 
+                    initial={{ scale: 0 }}
+                    whileHover={{ scale: 1.1 }}
+                    className="w-12 h-12 rounded-xl bg-bg-card flex items-center justify-center text-primary-start shadow-2xl"
+                  >
+                    <ExternalLink size={20} />
+                  </motion.div>
+                  <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white">View Project</span>
+                </div>
+              </div>
+              <div className="px-2">
+                <h4 className="text-lg font-bold mb-1 group-hover:text-primary-start transition-colors">{project.title}</h4>
+                <p className="text-sm text-gray-500">{project.category}</p>
+              </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
+    </SectionWrapper>
+  );
+};
+
+const BlogSection = () => {
+  const posts: BlogPost[] = [
+    { 
+      title: 'Design Conferences In 2022', 
+      category: 'Design', 
+      date: 'Feb 23, 2022', 
+      description: 'Veritatis et quasi architecto beatae vitae dicta sunt, explicabo.',
+      image: 'https://picsum.photos/seed/conf/600/400'
+    },
+    { 
+      title: 'Best Fonts Every Designer', 
+      category: 'Design', 
+      date: 'Feb 23, 2022', 
+      description: 'Sed ut perspiciatis, nam libero tempore, cum soluta nobis est eligendi.',
+      image: 'https://picsum.photos/seed/fonts/600/400'
+    },
+    { 
+      title: 'Design Digest #80', 
+      category: 'Design', 
+      date: 'Feb 23, 2022', 
+      description: 'Excepteur sint occaecat cupidatat no proident, quis nostrum exercitationem ullam.',
+      image: 'https://picsum.photos/seed/digest/600/400'
+    },
+  ];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+    >
+      <h2 className="text-3xl font-bold mb-10 relative inline-block">
+        Blog
+        <div className="absolute -bottom-2 left-0 w-12 h-1.5 primary-gradient rounded-full" />
+      </h2>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {posts.map((post, i) => (
+          <motion.article
+            key={i}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: i * 0.1 }}
+            whileHover={{ y: -10 }}
+            className="bg-bg-card border border-border-dark rounded-3xl overflow-hidden group cursor-pointer"
+          >
+            <div className="aspect-video overflow-hidden">
+              <img 
+                src={post.image} 
+                alt={post.title} 
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                referrerPolicy="no-referrer"
+              />
+            </div>
+            <div className="p-6">
+              <div className="flex items-center gap-3 text-xs text-gray-500 mb-3">
+                <span>{post.category}</span>
+                <div className="w-1 h-1 rounded-full bg-gray-600" />
+                <span>{post.date}</span>
+              </div>
+              <h4 className="text-xl font-bold mb-3 group-hover:text-primary-start transition-colors">{post.title}</h4>
+              <p className="text-sm text-gray-400 line-clamp-2 leading-relaxed">{post.description}</p>
+            </div>
+          </motion.article>
+        ))}
+      </div>
+    </motion.div>
+  );
+};
+
+const ContactSection = () => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      className="space-y-10"
+    >
+      <h2 className="text-3xl font-bold mb-8 relative inline-block">
+        Contact
+        <div className="absolute -bottom-2 left-0 w-12 h-1.5 primary-gradient rounded-full" />
+      </h2>
+
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.95 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        viewport={{ once: true }}
+        className="rounded-3xl overflow-hidden h-80 border border-border-dark grayscale brightness-50 contrast-125"
+      >
+        <iframe 
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3305.733248043702!2d-118.2436849!3d34.0522342!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80c2c648fa1d480d%3A0x5140151a11c3048!2sLos%20Angeles%2C%20CA!5e0!3m2!1sen!2sus!4v1645564556455!5m2!1sen!2sus" 
+          width="100%" 
+          height="100%" 
+          style={{ border: 0 }} 
+          allowFullScreen 
+          loading="lazy"
+        />
+      </motion.div>
+
+      <motion.section
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+      >
+        <h3 className="text-2xl font-bold mb-8">Contact Form</h3>
+        <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <input 
+              type="text" 
+              placeholder="Full name" 
+              className="w-full px-6 py-4 bg-transparent border border-border-dark rounded-2xl focus:outline-none focus:border-primary-start transition-colors"
+            />
+            <input 
+              type="email" 
+              placeholder="Email address" 
+              className="w-full px-6 py-4 bg-transparent border border-border-dark rounded-2xl focus:outline-none focus:border-primary-start transition-colors"
+            />
+          </div>
+          <textarea 
+            placeholder="Your Message" 
+            rows={5}
+            className="w-full px-6 py-4 bg-transparent border border-border-dark rounded-2xl focus:outline-none focus:border-primary-start transition-colors resize-none"
+          />
+          <div className="flex justify-end">
+            <motion.button 
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
+              className="flex items-center gap-2 px-8 py-4 primary-gradient text-bg-dark font-bold rounded-2xl hover:brightness-110 transition-all group shadow-lg active:shadow-none"
+            >
+              <Send size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+              Send Message
+            </motion.button>
+          </div>
+        </form>
+      </motion.section>
+    </motion.div>
+  );
+};
+
+// --- Main App ---
+
+export default function App() {
+  const [activeTab, setActiveTab] = useState<Tab>('About');
+
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'About': return <AboutSection />;
+      case 'Resume': return <ResumeSection />;
+      case 'Portfolio': return <PortfolioSection />;
+      case 'Blog': return <BlogSection />;
+      case 'Contact': return <ContactSection />;
+    }
+  };
+
+  return (
+    <HashRouter>
+      <CursorGlow />
+      <div className="min-h-screen py-8 lg:py-16 px-4 sm:px-8 lg:px-16 max-w-7xl mx-auto flex flex-col lg:flex-row gap-8 items-start relative z-10 animate-gradient-slow">
+        <Sidebar />
+        
+        <main className="flex-1 w-full bg-bg-card/40 backdrop-blur-xl border border-border-dark rounded-3xl flex flex-col min-h-[800px] relative shadow-2xl">
+          <div className="lg:absolute lg:top-0 lg:right-0 z-10 w-full lg:w-auto">
+            <Nav activeTab={activeTab} setActiveTab={setActiveTab} />
+          </div>
+          
+          <div className="p-8 lg:p-12 pt-12 lg:pt-24 flex-1">
+            <AnimatePresence mode="wait">
+              <div key={activeTab}>
+                {renderContent()}
+              </div>
+            </AnimatePresence>
+          </div>
+        </main>
+      </div>
+      
+      {/* Background Decorative Elements */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
+        <Parallax offset={-100}>
+          <div className="absolute top-[10%] left-[5%] w-96 h-96 bg-primary-start/5 rounded-full blur-[120px]" />
+        </Parallax>
+        <Parallax offset={150}>
+          <div className="absolute bottom-[10%] right-[5%] w-[500px] h-[500px] bg-primary-end/5 rounded-full blur-[150px]" />
+        </Parallax>
+      </div>
+
+      <AnimatePresence>
+        <Routes>
+          <Route path="/project/:projectId" element={<ProjectModal projects={PROJECTS} />} />
+        </Routes>
+      </AnimatePresence>
+    </HashRouter>
+  );
+}

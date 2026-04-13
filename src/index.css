@@ -1,0 +1,108 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Outfit", sans-serif;
+  
+  --color-primary-start: #00f2fe;
+  --color-primary-end: #4facfe;
+  --color-bg-dark: #050505;
+  --color-bg-card: #0a0a0a;
+  --color-border-dark: #1f1f2e;
+}
+
+@layer base {
+  body {
+    @apply bg-bg-dark text-gray-400 font-sans antialiased selection:bg-primary-start selection:text-bg-dark overflow-x-hidden;
+    background-image: 
+      radial-gradient(circle at 50% -20%, rgba(0, 242, 254, 0.08) 0%, transparent 50%),
+      radial-gradient(circle at 0% 100%, rgba(79, 172, 254, 0.05) 0%, transparent 40%);
+    background-attachment: fixed;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display text-white tracking-tight;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-white/5 backdrop-blur-2xl border border-white/5;
+  }
+
+  .primary-gradient {
+    @apply bg-linear-to-br from-primary-start to-primary-end;
+  }
+
+  .primary-text {
+    @apply bg-linear-to-br from-primary-start to-primary-end bg-clip-text text-transparent;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .animate-gradient-slow {
+    background-size: 200% 200%;
+    animation: gradient-move 15s ease infinite;
+  }
+}
+
+@keyframes gradient-move {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-bg-dark;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-border-dark rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #00f2fe;
+}
+
+/* Cursor Glow */
+.cursor-glow {
+  pointer-events: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(0, 242, 254, 0.05) 0%, transparent 70%);
+  border-radius: 50%;
+  z-index: 9999;
+  mix-blend-mode: screen;
+  transition: opacity 0.3s ease;
+}
+
+/* Card Glow Hover */
+.card-glow-hover {
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(16px);
+}
+
+.card-glow-hover:hover {
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: 
+    0 30px 60px -12px rgba(0, 0, 0, 0.8),
+    0 0 25px rgba(0, 242, 254, 0.05);
+  border-color: rgba(0, 242, 254, 0.15);
+}
