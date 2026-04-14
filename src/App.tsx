@@ -109,7 +109,6 @@ const Sidebar = () => (
     <div className="w-full space-y-6 pt-6 border-t border-border-dark">
       {[
         { icon: Mail, label: 'Email', value: 'satishthakur7576@gmail.com', href: 'mailto:satishthakur7576@gmail.com' },
-        { icon: Linkedin, label: 'LinkedIn', value: 'linkedin.com/in/thakursatish', href: 'https://linkedin.com/in/thakursatish' },
         { icon: MapPin, label: 'Location', value: 'Jorhat, Assam, India' }
       ].map((item, i) => {
         const innerContent = (
