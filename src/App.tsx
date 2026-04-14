@@ -131,16 +131,19 @@ const Sidebar = () => (
       ].map(({ Icon, href }, i) => (
         <div key={i}>
           <Magnetic strength={0.5}>
-            <motion.a 
-              href={href} 
-              target="_blank"
-              rel="noopener noreferrer"
+            <motion.div 
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
-              className="w-10 h-10 rounded-xl bg-border-dark flex items-center justify-center text-gray-500 hover:text-primary-start transition-colors hover:bg-white/5 border border-transparent hover:border-white/10 shadow-lg"
             >
-              <Icon size={20} />
-            </motion.a>
+              <a 
+                href={href} 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-xl bg-border-dark flex items-center justify-center text-gray-500 hover:text-primary-start transition-colors hover:bg-white/5 border border-transparent hover:border-white/10 shadow-lg block"
+              >
+                <Icon size={20} />
+              </a>
+            </motion.div>
           </Magnetic>
         </div>
       ))}
