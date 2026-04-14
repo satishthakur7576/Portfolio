@@ -14,59 +14,32 @@ import { CursorGlow, Magnetic, SectionWrapper, Parallax } from './components/Eff
 
 const PROJECTS: Project[] = [
   { 
-    id: 'finance',
-    title: 'Finance', 
-    category: 'Web development', 
-    image: 'https://picsum.photos/seed/finance/800/600',
-    description: 'A comprehensive financial dashboard designed for modern asset management. Features real-time data visualization, secure transaction tracking, and multi-currency support.',
-    technologies: ['React', 'TypeScript', 'Tailwind CSS', 'D3.js'],
-    gallery: ['https://picsum.photos/seed/finance1/800/600', 'https://picsum.photos/seed/finance2/800/600']
+    id: 'cad-modeling',
+    title: '3D CAD Modeling \u2013 Mechanical Components', 
+    category: '3D CAD Modeling', 
+    image: 'https://picsum.photos/seed/cad/800/600',
+    description: 'Designed 3D part models and multi-component assemblies using SolidWorks, applying GD&T principles and generating production-ready engineering drawings with proper tolerances and annotations.',
+    technologies: ['SolidWorks', '3D Modeling', 'GD&T', 'Assemblies'],
+    gallery: ['https://picsum.photos/seed/cad1/800/600', 'https://picsum.photos/seed/cad2/800/600']
   },
   { 
-    id: 'orizon',
-    title: 'Orizon', 
-    category: 'Web development', 
-    image: 'https://picsum.photos/seed/orizon/800/600',
-    description: 'A premium travel booking platform focusing on luxury experiences. Includes an intuitive search engine, interactive maps, and a seamless checkout process.',
-    technologies: ['Next.js', 'Node.js', 'PostgreSQL', 'Framer Motion'],
-    gallery: ['https://picsum.photos/seed/orizon1/800/600', 'https://picsum.photos/seed/orizon2/800/600']
+    id: '2d-drafting',
+    title: '2D Engineering Drafting', 
+    category: '2D Drafting', 
+    image: 'https://picsum.photos/seed/draft/800/600',
+    description: 'Created detailed 2D mechanical drawings including cross-sections, exploded views, and bill of materials (BOM) for machine components using AutoCAD Mechanical.',
+    technologies: ['AutoCAD Mechanical', '2D Drafting', 'BOM', 'Cross-sections'],
+    gallery: ['https://picsum.photos/seed/draft1/800/600', 'https://picsum.photos/seed/draft2/800/600']
   },
   { 
-    id: 'fundo',
-    title: 'Fundo', 
-    category: 'Web design', 
-    image: 'https://picsum.photos/seed/fundo/800/600',
-    description: 'Creative portfolio design for independent artists and photographers. Emphasizes visual storytelling with a minimal, high-contrast aesthetic.',
-    technologies: ['Figma', 'Adobe XD', 'Webflow'],
-    gallery: ['https://picsum.photos/seed/fundo1/800/600', 'https://picsum.photos/seed/fundo2/800/600']
-  },
-  { 
-    id: 'brawlhalla',
-    title: 'Brawlhalla', 
-    category: 'Applications', 
-    image: 'https://picsum.photos/seed/brawl/800/600',
-    description: 'A companion app for competitive gamers, providing real-time stats, tournament schedules, and community forums.',
-    technologies: ['React Native', 'Firebase', 'Redux'],
-    gallery: ['https://picsum.photos/seed/brawl1/800/600', 'https://picsum.photos/seed/brawl2/800/600']
-  },
-  { 
-    id: 'dsm',
-    title: 'DSM', 
-    category: 'Web design', 
-    image: 'https://picsum.photos/seed/dsm/800/600',
-    description: 'Design System Management tool for large-scale enterprise applications. Streamlines the workflow between designers and developers.',
-    technologies: ['React', 'Storybook', 'Styled Components'],
-    gallery: ['https://picsum.photos/seed/dsm1/800/600', 'https://picsum.photos/seed/dsm2/800/600']
-  },
-  { 
-    id: 'metaspark',
-    title: 'MetaSpark', 
-    category: 'Web design', 
-    image: 'https://picsum.photos/seed/meta/800/600',
-    description: 'A futuristic landing page for a decentralized social network. Features immersive 3D elements and interactive scrolling experiences.',
-    technologies: ['Three.js', 'GSAP', 'WebGL'],
-    gallery: ['https://picsum.photos/seed/meta1/800/600', 'https://picsum.photos/seed/meta2/800/600']
-  },
+    id: 'python-automation',
+    title: 'Python Automation Scripts', 
+    category: 'Automation Scripts', 
+    image: 'https://picsum.photos/seed/python/800/600',
+    description: 'Developed Python scripts for logical problem-solving and basic task automation, building a foundation for data-driven engineering workflows and process optimization.',
+    technologies: ['Python', 'Scripting', 'Automation', 'Data Processing'],
+    gallery: ['https://picsum.photos/seed/python1/800/600', 'https://picsum.photos/seed/python2/800/600']
+  }
 ];
 
 // --- Components ---
@@ -128,16 +101,16 @@ const Sidebar = () => (
       </div>
     </Parallax>
 
-    <h1 className="text-2xl font-bold mb-2 text-center">Richard Hanrick</h1>
+    <h1 className="text-2xl font-bold mb-2 text-center">Satish Thakur</h1>
     <span className="px-4 py-1.5 bg-border-dark/50 rounded-lg text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-8 text-center border border-white/5">
       Mechanical Engineer
     </span>
 
     <div className="w-full space-y-6 pt-6 border-t border-border-dark">
       {[
-        { icon: Mail, label: 'Email', value: 'richard@example.com' },
-        { icon: Phone, label: 'Phone', value: '+1 (213) 352-2795' },
-        { icon: MapPin, label: 'Location', value: 'California, USA' }
+        { icon: Mail, label: 'Email', value: 'satishthakur7576@gmail.com' },
+        { icon: Linkedin, label: 'LinkedIn', value: 'linkedin.com/in/thakursatish' },
+        { icon: MapPin, label: 'Location', value: 'Jorhat, Assam, India' }
       ].map((item, i) => (
         <div key={i} className="flex items-center gap-4 group cursor-default">
           <div className="w-10 h-10 rounded-xl bg-border-dark flex items-center justify-center text-primary-start transition-all group-hover:primary-gradient group-hover:text-bg-dark shadow-inner">
@@ -152,11 +125,16 @@ const Sidebar = () => (
     </div>
 
     <div className="flex gap-4 mt-8">
-      {[Linkedin, Github, Instagram].map((Icon, i) => (
+      {[
+        { Icon: Linkedin, href: "https://www.linkedin.com/in/thakursatish" },
+        { Icon: Github, href: "https://github.com/satishthakur7576" }
+      ].map(({ Icon, href }, i) => (
         <div key={i}>
           <Magnetic strength={0.5}>
             <motion.a 
-              href="#" 
+              href={href} 
+              target="_blank"
+              rel="noopener noreferrer"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               className="w-10 h-10 rounded-xl bg-border-dark flex items-center justify-center text-gray-500 hover:text-primary-start transition-colors hover:bg-white/5 border border-transparent hover:border-white/10 shadow-lg"
@@ -323,13 +301,13 @@ const AboutSection = () => {
           >
             <div className="text-2xl font-light text-white mb-6 flex items-center gap-3">
               <Sparkles className="text-primary-start animate-pulse" size={24} />
-              <span>Hello! I'm a <Typewriter texts={['Mechanical Engineer', 'Video Editor', 'AI Enthusiast', 'UI/UX Designer']} /></span>
+              <span>Hello! I'm a <Typewriter texts={['Mechanical Engineer', 'CAD Designer', 'Python Developer', 'Automation Enthusiast']} /></span>
             </div>
             <p>
-              I'm Creative Director and UI/UX Designer from Sydney, Australia, working in web development and print media. I enjoy turning complex problems into simple, beautiful and intuitive designs.
+              Final-year B.Tech Mechanical Engineering student with hands-on CAD experience in SolidWorks and AutoCAD for 3D modeling, assemblies, and engineering drawings. Proven ability to apply mechanical fundamentals in industrial and academic settings, including refinery operations at IOCL and material testing labs.
             </p>
             <p>
-              My job is to build your website so that it is functional and user-friendly but at the same time attractive. Moreover, I add personal touch to your product and make sure that is eye-catching and easy to use. My aim is to bring across your message and identity in the most creative way. I created web design for many famous brand companies.
+              Complementary Python skills for automation and data-driven problem-solving. Seeking engineering roles in mechanical design, manufacturing, or technical operations.
             </p>
           </motion.div>
         </section>
@@ -370,22 +348,21 @@ const AboutSection = () => {
 
 const ResumeSection = () => {
   const education: TimelineItem[] = [
-    { title: 'University School of The Arts', period: '2007 — 2008', description: 'Nemo enims ipsam voluptatem, blanditiis praesentium voluptatum deleniti atque corrupti, quos dolores et quas molestias exceptur.' },
-    { title: 'New York Academy of Art', period: '2006 — 2007', description: 'Ratione voluptatem sequi nesciunt, facere quisquam facere monda assimus, omnis voluptas assumenda est omnis.' },
-    { title: 'High School of Art and Design', period: '2002 — 2004', description: 'Duis aute irure dolor in reprehenderit in voluptate, quila voluptas mag odit aut fugit, sed consequuntur magni dolores eos.' },
+    { title: 'Golaghat Engineering College', period: 'July 2022 — July 2026 (Expected)', description: 'Bachelor of Technology – Mechanical Engineering. Golaghat, Assam, India.' },
+    { title: 'Crescent Academy', period: 'July 2020 — March 2022', description: 'Higher Secondary Certificate – Physics, Chemistry, Mathematics (PCM). Assam, India.' },
   ];
 
   const experience: TimelineItem[] = [
-    { title: 'Creative Director', period: '2015 — Present', description: 'Nemo enims ipsam voluptatem, blanditiis praesentium voluptatum deleniti atque corrupti, quos dolores et quas molestias exceptur.' },
-    { title: 'Art Director', period: '2013 — 2015', description: 'Nemo enims ipsam voluptatem, blanditiis praesentium voluptatum deleniti atque corrupti, quos dolores et quas molestias exceptur.' },
-    { title: 'Web Designer', period: '2010 — 2013', description: 'Nemo enims ipsam voluptatem, blanditiis praesentium voluptatum deleniti atque corrupti, quos dolores et quas molestias exceptur.' },
+    { title: 'Indian Oil Corporation Limited (IOCL)', period: 'June 2025', description: 'Industrial Intern – Mechanical / Refinery Operations. Observed and analyzed real-world operations of critical mechanical systems including centrifugal pumps, compressors, and heat exchangers. Supported preventive maintenance tasks and applied safety protocols.' },
+    { title: 'Jorhat Engineering College', period: 'June 2024', description: 'Academic Intern – Metrology & Material Testing Laboratory. Executed precision measurement experiments using micrometers and Vernier calipers. Conducted tensile strength and hardness tests on metal specimens. Authored detailed lab reports.' },
+    { title: 'Prerona Pratibandhi Sishu Bikash Kendra', period: 'July 2023', description: 'Social Intern – Community Engagement. Coordinated educational and therapy support activities for differently-abled children, developing empathy-driven communication and inclusive teamwork skills.' },
   ];
 
   const skills: Skill[] = [
-    { name: 'Web Design', percentage: 80 },
-    { name: 'Graphic Design', percentage: 70 },
-    { name: 'Branding', percentage: 90 },
-    { name: 'WordPress', percentage: 50 },
+    { name: 'SolidWorks (3D CAD)', percentage: 85 },
+    { name: 'AutoCAD Mechanical', percentage: 80 },
+    { name: 'Python Automation', percentage: 75 },
+    { name: 'Refinery Operations', percentage: 65 },
   ];
 
   return (
@@ -501,7 +478,7 @@ const ResumeSection = () => {
 };
 
 const PortfolioSection = () => {
-  const categories = ['All', 'Web design', 'Applications', 'Web development'];
+  const categories = ['All', '3D CAD Modeling', '2D Drafting', 'Automation Scripts'];
   const [activeCategory, setActiveCategory] = useState('All');
   const navigate = useNavigate();
 
