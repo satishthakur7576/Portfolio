@@ -108,20 +108,31 @@ const Sidebar = () => (
 
     <div className="w-full space-y-6 pt-6 border-t border-border-dark">
       {[
-        { icon: Mail, label: 'Email', value: 'satishthakur7576@gmail.com' },
-        { icon: Linkedin, label: 'LinkedIn', value: 'linkedin.com/in/thakursatish' },
+        { icon: Mail, label: 'Email', value: 'satishthakur7576@gmail.com', href: 'mailto:satishthakur7576@gmail.com' },
+        { icon: Linkedin, label: 'LinkedIn', value: 'linkedin.com/in/thakursatish', href: 'https://linkedin.com/in/thakursatish' },
         { icon: MapPin, label: 'Location', value: 'Jorhat, Assam, India' }
-      ].map((item, i) => (
-        <div key={i} className="flex items-center gap-4 group cursor-default">
-          <div className="w-10 h-10 rounded-xl bg-border-dark flex items-center justify-center text-primary-start transition-all group-hover:primary-gradient group-hover:text-bg-dark shadow-inner">
-            <item.icon size={18} />
+      ].map((item, i) => {
+        const innerContent = (
+          <>
+            <div className="w-10 h-10 rounded-xl bg-border-dark flex items-center justify-center text-primary-start transition-all group-hover:primary-gradient group-hover:text-bg-dark shadow-inner">
+              <item.icon size={18} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[10px] uppercase tracking-wider text-gray-500 font-bold">{item.label}</p>
+              <p className="text-sm truncate text-gray-300 group-hover:text-white transition-colors">{item.value}</p>
+            </div>
+          </>
+        );
+        return item.href ? (
+          <a key={i} href={item.href} target={item.href.startsWith('mailto') ? '_self' : '_blank'} rel="noopener noreferrer" className="flex items-center gap-4 group cursor-pointer w-full">
+            {innerContent}
+          </a>
+        ) : (
+          <div key={i} className="flex items-center gap-4 group cursor-default">
+            {innerContent}
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-[10px] uppercase tracking-wider text-gray-500 font-bold">{item.label}</p>
-            <p className="text-sm truncate text-gray-300 group-hover:text-white transition-colors">{item.value}</p>
-          </div>
-        </div>
-      ))}
+        )
+      })}
     </div>
 
     <div className="flex gap-4 mt-8">
@@ -131,19 +142,16 @@ const Sidebar = () => (
       ].map(({ Icon, href }, i) => (
         <div key={i}>
           <Magnetic strength={0.5}>
-            <motion.div 
+            <motion.a 
+              href={href} 
+              target="_blank"
+              rel="noopener noreferrer"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
+              className="w-10 h-10 rounded-xl bg-border-dark flex items-center justify-center text-gray-500 hover:text-primary-start transition-colors hover:bg-white/5 border border-transparent hover:border-white/10 shadow-lg cursor-pointer"
             >
-              <a 
-                href={href} 
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-xl bg-border-dark flex items-center justify-center text-gray-500 hover:text-primary-start transition-colors hover:bg-white/5 border border-transparent hover:border-white/10 shadow-lg block"
-              >
-                <Icon size={20} />
-              </a>
-            </motion.div>
+              <Icon size={20} />
+            </motion.a>
           </Magnetic>
         </div>
       ))}
