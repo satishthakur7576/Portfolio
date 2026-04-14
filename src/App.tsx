@@ -646,6 +646,36 @@ const BlogSection = () => {
 };
 
 const ContactSection = () => {
+  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setStatus('submitting');
+    
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    
+    try {
+      const response = await fetch('https://formsubmit.co/ajax/satishthakur7576@gmail.com', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json'
+        },
+        body: formData
+      });
+      
+      if (response.ok) {
+        setStatus('success');
+        form.reset();
+        setTimeout(() => setStatus('idle'), 5000);
+      } else {
+        setStatus('error');
+      }
+    } catch (error) {
+      setStatus('error');
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -665,7 +695,7 @@ const ContactSection = () => {
         className="rounded-3xl overflow-hidden h-80 border border-border-dark grayscale brightness-50 contrast-125"
       >
         <iframe 
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3305.733248043702!2d-118.2436849!3d34.0522342!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80c2c648fa1d480d%3A0x5140151a11c3048!2sLos%20Angeles%2C%20CA!5e0!3m2!1sen!2sus!4v1645564556455!5m2!1sen!2sus" 
+          src="https://maps.google.com/maps?q=Jorhat,%20Assam&t=&z=13&ie=UTF8&iwloc=&output=embed" 
           width="100%" 
           height="100%" 
           style={{ border: 0 }} 
@@ -680,32 +710,56 @@ const ContactSection = () => {
         viewport={{ once: true }}
       >
         <h3 className="text-2xl font-bold mb-8">Contact Form</h3>
-        <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+        <form className="space-y-6" onSubmit={handleSubmit}>
+          {status === 'success' && (
+            <div className="p-4 bg-green-500/10 border border-green-500/20 text-green-400 rounded-2xl font-sm font-medium">
+              Message sent! Check your email inbox to verify FormSubmit if this is the first ever send.
+            </div>
+          )}
+          {status === 'error' && (
+            <div className="p-4 bg-red-500/10 border border-red-500/20 text-red-500 rounded-2xl font-sm font-medium">
+              Something went wrong. Please email directly!
+            </div>
+          )}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <input 
               type="text" 
+              name="name"
+              required
               placeholder="Full name" 
               className="w-full px-6 py-4 bg-transparent border border-border-dark rounded-2xl focus:outline-none focus:border-primary-start transition-colors"
             />
             <input 
               type="email" 
+              name="email"
+              required
               placeholder="Email address" 
               className="w-full px-6 py-4 bg-transparent border border-border-dark rounded-2xl focus:outline-none focus:border-primary-start transition-colors"
             />
           </div>
           <textarea 
+            name="message"
+            required
             placeholder="Your Message" 
             rows={5}
             className="w-full px-6 py-4 bg-transparent border border-border-dark rounded-2xl focus:outline-none focus:border-primary-start transition-colors resize-none"
           />
           <div className="flex justify-end">
             <motion.button 
+              type="submit"
+              disabled={status === 'submitting'}
               whileTap={{ scale: 0.95 }}
               transition={{ type: "spring", stiffness: 400, damping: 17 }}
-              className="flex items-center gap-2 px-8 py-4 primary-gradient text-bg-dark font-bold rounded-2xl hover:brightness-110 transition-all group shadow-lg active:shadow-none"
+              className="flex items-center gap-2 px-8 py-4 primary-gradient text-bg-dark font-bold rounded-2xl hover:brightness-110 transition-all group shadow-lg active:shadow-none disabled:opacity-50"
             >
-              <Send size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-              Send Message
+              {status === 'submitting' ? (
+                <span>Sending...</span>
+              ) : (
+                <>
+                  <Send size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                  Send Message
+                </>
+              )}
             </motion.button>
           </div>
         </form>
